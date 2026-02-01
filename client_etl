@@ -5,15 +5,28 @@ import tkinter as tk
 from tkinter import filedialog
 
 def normalize_phone_number(phone_raw):
+    """
+    Extracts digits from phone string.
+    Returns formatted 'xxx-xxx-xxxx' if 10 digits found, else None.
+    """
     digits = re.sub(r'\D', '', phone_raw)
     if len(digits) == 10:
         return f"{digits[:3]}-{digits[3:6]}-{digits[6:]}"
     return None
 
 def is_valid_zip_code(zip_raw):
+    """
+    Checks if zip code string contains exactly 5 digits.
+    """
+    # strict validation: exactly 5 digits, no other characters allowed (after stripping whitespace)
     return bool(re.fullmatch(r'\d{5}', zip_raw.strip()))
 
 def parse_line(line):
+    """
+    Parses a single line of input text.
+    Returns a dictionary with keys: firstname, lastname, phonenumber, color, zipcode
+    or None if parsing fails (format not recognized).
+    """
     line = line.strip()
     if not line:
         return None
@@ -26,7 +39,10 @@ def parse_line(line):
     zip_code = ""
     color = ""
 
+    # Format 2 -> 4 parts
     if len(parts) == 4:
+        # [Name, Color, Zip, Phone]
+        # Strategy: Check if parts[2] looks like zip. And parts[1] looks like complete name separated by a space.
         
         if not is_valid_zip_code(parts[2]):
             return None
@@ -36,15 +52,20 @@ def parse_line(line):
             first_name = name_parts[0]
             last_name = name_parts[1]
         else:
+            # If no space in name, it's invalid per "Firstname Lastname" structure requirement
             return None
         
         color = parts[1]
         zip_code = parts[2]
         phone_number = parts[3]
 
+    # Format 1 or 3 -> 5 parts
     elif len(parts) == 5:
         # Format 1: Lastname, Firstname, (703)-742-0996, Blue, 10013
         # Format 3: Firstname, Lastname, 10013, 646 111 0101, Green
+        
+        # Strategy: Check if parts[2] is zip -> Format 3
+        #           Check if parts[4] is zip -> Format 1
         
         is_p2_zip = is_valid_zip_code(parts[2])
         is_p4_zip = is_valid_zip_code(parts[4])
@@ -87,7 +108,7 @@ def main():
     else:
         # Use Tkinter to select file
         root = tk.Tk()
-        root.withdraw()
+        root.withdraw() # Hide the main window
         input_file_path = filedialog.askopenfilename(
             title="Select Input File",
             filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")]
@@ -113,9 +134,8 @@ def main():
             if parsed_data:
                 
                 norm_phone = normalize_phone_number(parsed_data["phonenumber"])
-                valid_zip = is_valid_zip_code(parsed_data["zipcode"])
                 
-                if norm_phone and valid_zip:
+                if norm_phone:
                     entry = {
                         "color": parsed_data["color"],
                         "firstname": parsed_data["firstname"],
