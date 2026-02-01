@@ -3,6 +3,7 @@ import re
 import sys
 import tkinter as tk
 from tkinter import filedialog
+from operator import itemgetter
 
 def normalize_phone_number(phone_raw):
     """
@@ -150,7 +151,7 @@ def main():
                 errors.append(i)
 
         # Sorting by (lastname, firstname)
-        entries.sort(key=lambda x: (x["lastname"], x["firstname"]))
+        entries.sort(key=itemgetter("lastname", "firstname"))
 
         result = {
             "entries": entries,
