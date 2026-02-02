@@ -1,0 +1,13 @@
+
+Doe, John, (555)-123-4567, Blue, 12345
+
+Smith, Alice, Green, 67890, 555-987-6543
+Bob Jones, Red, 54321, 555 111 2222
+
+InvalidZip User, Yellow, 12a34, 555-000-0000
+Long Phone, Orange, 99999, 12345678901
+
+, Purple, 11111, 555-333-4444
+Empty Color, , 22222, 555-444-5555
+Empty Zip, Cyan, , 555-555-6666
+Empty Phone, Magenta, 33333, 
