@@ -44,6 +44,10 @@ def parse_line(line):
     if len(parts) == 4:
         # [Name, Color, Zip, Phone]
         # Strategy: Check if parts[2] looks like zip. And parts[1] looks like complete name separated by a space.
+
+        # Check if any part is empty, in case it is, line is invalid
+        if parts[0].is_empty() or parts[1].is_empty() or parts[2].is_empty() or parts[3].is_empty():
+            return None
         
         if not is_valid_zip_code(parts[2]):
             return None
@@ -56,6 +60,7 @@ def parse_line(line):
             # If no space in name, it's invalid per "Firstname Lastname" structure requirement
             return None
         
+        # Assign values
         color = parts[1]
         zip_code = parts[2]
         phone_number = parts[3]
@@ -67,7 +72,11 @@ def parse_line(line):
         
         # Strategy: Check if parts[2] is zip -> Format 3
         #           Check if parts[4] is zip -> Format 1
-        
+
+        # Check if any part is empty, in case it is, line is invalid
+        if parts[0].is_empty() or parts[1].is_empty() or parts[2].is_empty() or parts[3].is_empty() or parts[4].is_empty():
+            return None
+
         is_p2_zip = is_valid_zip_code(parts[2])
         is_p4_zip = is_valid_zip_code(parts[4])
         
@@ -79,7 +88,7 @@ def parse_line(line):
             phone_number = parts[3]
             color = parts[4]
             
-        elif is_p4_zip:
+        elif is_p4_zip and not is_p2_zip:
             # Format 1: Lastname, Firstname, Phone, Color, Zip
             last_name = parts[0]
             first_name = parts[1]
